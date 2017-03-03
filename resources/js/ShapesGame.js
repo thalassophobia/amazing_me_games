@@ -5,6 +5,9 @@ app.stage.interactive = true;
 
 var square = new PIXI.Graphics();
 var circle = new PIXI.Graphics();
+var starContainer = new PIXI.Container();
+var star = new PIXI.Graphics();
+
 var rectWidth = 100;
 var rectHeight = 100;
 var circleRadius = 50;
@@ -25,9 +28,6 @@ function drawSquare(x, y) {
         .on('pointerup', onDragEnd)
         .on('pointerupoutside', onDragEnd)
         .on('pointermove', onRectDragMove);
-
-    // square.x = x;
-    // square.y = y;
 }
 
 //Draws a dragable circle
@@ -46,16 +46,46 @@ function drawCircle(x, y) {
         .on('pointerup', onDragEnd)
         .on('pointerupoutside', onDragEnd)
         .on('pointermove', onCircleDragMove);
-
-    // circle.x = x;
-    // circle.y = y;
 }
 
+function drawStar() {
+    star.moveTo(0, 0);
+    star.lineStyle(0);
+    star.beginFill(0x00FF00, 1);
+
+    star.moveTo(550, 100);
+    star.lineTo(570, 150);
+    star.lineTo(630, 155);
+    star.lineTo(585, 195);
+    star.lineTo(600, 250);
+    star.lineTo(550, 220);
+    star.lineTo(500, 250);
+    star.lineTo(515, 195);
+    star.lineTo(470, 155);
+    star.lineTo(530, 150);
+    star.endFill();
+
+    star.interactive = true;
+    star.buttonMode = true;
+
+    //pointer events for touch AND mouse
+    star
+        .on('pointerdown', onDragStart)
+        .on('pointerup', onDragEnd)
+        .on('pointerupoutside', onDragEnd)
+        .on('pointermove', onStarDragMove);
+}
+
+drawStar();
 drawCircle(150, 300);
+star.position.x = -400;
+star.position.y = 280;
 drawSquare(100, 100);
+console.log(star.position)
 
 app.stage.addChild(square);
-app.stage.addChild(circle)
+app.stage.addChild(circle);
+app.stage.addChild(star);
 
 function onDragStart(event) {
     // store a reference to the data
@@ -86,6 +116,14 @@ function onCircleDragMove() {
         var newPosition = this.data.getLocalPosition(this.parent);
         this.x = newPosition.x - circleRadius * 3;
         this.y = newPosition.y - circleRadius * 6;
+    }
+}
+
+function onStarDragMove() {
+    if (this.dragging) {
+        var newPosition = this.data.getLocalPosition(this.parent);
+        this.x = newPosition.x - 550;
+        this.y = newPosition.y - 185;
     }
 }
 

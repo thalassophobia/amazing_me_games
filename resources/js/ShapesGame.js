@@ -7,24 +7,27 @@ var square = new PIXI.Graphics();
 var rectWidth = 100;
 var rectHeight = 100
 
-//blue lines 
-square.lineStyle(2, 0x0000FF, 1);
-square.beginFill(0x0000FF, 1);
-square.drawRect(100, 100, rectWidth, rectHeight);
-square.endFill();
+//Draws a dragable square
+function drawSquare(x, y) {
+    square.lineStyle(2, 0x0000FF, 1);
+    square.beginFill(0x0000FF, 1);
+    square.drawRect(100, 100, rectWidth, rectHeight);
+    square.endFill();
 
-square.interactive = true;
-square.buttonMode = true;
+    square.interactive = true;
+    square.buttonMode = true;
 
-//pointer events for touch AND mouse
-square
-    .on('pointerdown', onDragStart)
-    .on('pointerup', onDragEnd)
-    .on('pointerupoutside', onDragEnd)
-    .on('pointermove', onDragMove);
+    //pointer events for touch AND mouse
+    square
+        .on('pointerdown', onDragStart)
+        .on('pointerup', onDragEnd)
+        .on('pointerupoutside', onDragEnd)
+        .on('pointermove', onDragMove);
 
-square.x = 0;
-square.y = 0;
+    square.x = x;
+    square.y = y;
+}
+drawSquare(0, 0);
 
 app.stage.addChild(square);
 
@@ -55,7 +58,7 @@ function onDragMove() {
 animate();
 
 function animate() {
-    requestAnimationFrame( animate );
+    requestAnimationFrame(animate);
 }
 // draw a circle
 // graphics.lineStyle(0);

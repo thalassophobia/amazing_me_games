@@ -81,7 +81,6 @@ drawCircle(150, 300);
 star.position.x = -400;
 star.position.y = 280;
 drawSquare(100, 100);
-console.log(star.position)
 
 app.stage.addChild(square);
 app.stage.addChild(circle);

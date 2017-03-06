@@ -5,7 +5,7 @@ var IMG_WIDTH = 100;
 var IMG_HEIGHT = 100;
 
 // Declare objects
-var eggs, flour, milk, bowl, spoon, cake;
+var eggs, flour, milk, bowl, spoon, cake, steps_background;
 
 var targetObject = "eggs"; //change to be randomized
 var objectList = ["eggs", "flour", "milk"];
@@ -19,6 +19,8 @@ var moveEggsBack = false;
 var moveFlourBack = false;
 var moveMilkBack = false;
 var cakeFadeIn = false;
+
+var stepOne, stepTwo, stepThree;
 
 //store initial starting locations
 var eggsX = WIDTH - IMG_WIDTH - 40;
@@ -50,19 +52,84 @@ PIXI.loader
 function setup() {
 
   addImages();
-  //addText();
+
+  addText();
+
+  // Add last to ensure that they overlay everything
+  stage.addChild(milk);
+  stage.addChild(flour);
+  stage.addChild(eggs);
 
   animate();
 }
 
 function addText() {
-  var message = new Text(
-    "Cake",
-    {fontFamily: "Arial", fontSize: 32, fill: "blue"}
-  );
+  var cakeText = new PIXI.Text("Cake", {
+        fontFamily: 'Comic Sans MS',
+        fontSize: 36,
+        fill: 'steelblue',
+        fontWeight: 'bold'
+  });
+  cakeText.anchor.set(0.5, 0.5);
+  cakeText.position.set(steps_background.width / 2, steps_background.y + 50);
 
-  message.x = 50;
-  stage.addChild(message);
+  //Randomize instructions
+  swap(0, Math.floor(Math.random() * 3));
+  swap(1, Math.floor(Math.random() * 2 + 1));
+  targetObject = objectList[0];
+
+  //Add first determined step
+  stepOne = new PIXI.Text("1. " + objectList[0], {
+        fontFamily: 'Comic Sans MS',
+        fontSize: 24,
+        fill: 'magenta'
+  });
+  stepOne.position.set(steps_background.x + 50, cakeText.y + 40);
+
+  var picOne = new PIXI.Sprite(
+    PIXI.loader.resources["resources/images/" + objectList[0] + ".png"].texture
+  );
+  picOne.width = IMG_WIDTH / 3;
+  picOne.height = IMG_HEIGHT / 3;
+  picOne.position.set(stepOne.x + stepOne.width + 10, stepOne.y);
+  stage.addChild(picOne);
+
+  //Add second determined step
+  stepTwo = new PIXI.Text("2. " + objectList[1], {
+        fontFamily: 'Comic Sans MS',
+        fontSize: 24,
+        fill: 'magenta'
+  });
+  stepTwo.position.set(steps_background.x + 50, stepOne.y + 50);
+
+  var picTwo = new PIXI.Sprite(
+    PIXI.loader.resources["resources/images/" + objectList[1] + ".png"].texture
+  );
+  picTwo.width = IMG_WIDTH / 3;
+  picTwo.height = IMG_HEIGHT / 3;
+  picTwo.position.set(stepTwo.x + stepTwo.width + 10, stepTwo.y);
+  stage.addChild(picTwo);
+
+  //Add third determined step
+  stepThree = new PIXI.Text("3. " + objectList[2], {
+        fontFamily: 'Comic Sans MS',
+        fontSize: 24,
+        fill: 'magenta'
+  });
+  stepThree.position.set(steps_background.x + 50, stepTwo.y + 50);
+
+  var picThree = new PIXI.Sprite(
+    PIXI.loader.resources["resources/images/" + objectList[2] + ".png"].texture
+  );
+  picThree.width = IMG_WIDTH / 3;
+  picThree.height = IMG_HEIGHT / 3;
+  picThree.position.set(stepThree.x + stepThree.width + 10, stepThree.y);
+  stage.addChild(picThree);
+
+  stage.addChild(cakeText);
+  stage.addChild(stepOne);
+  stage.addChild(stepTwo);
+  stage.addChild(stepThree);
 }
 
 function addImages() {
@@ -157,7 +224,7 @@ function addImages() {
   kitchen_background.width = WIDTH;
   kitchen_background.height = HEIGHT;
 
-  var steps_background = new PIXI.Sprite(
+  steps_background = new PIXI.Sprite(
     PIXI.loader.resources["resources/images/steps_background.png"].texture
   );
 
@@ -165,7 +232,16 @@ function addImages() {
   steps_background.width = IMG_WIDTH * 3;
   steps_background.height = IMG_HEIGHT * 4;
 
-    var shelf = new PIXI.Sprite(
+  var recipePic = new PIXI.Sprite(
+    PIXI.loader.resources["resources/images/cake.png"].texture
+  );
+
+  recipePic.anchor.set(0.5, 0.5);
+  recipePic.position.set(steps_background.x + steps_background.width / 2, steps_background.height - 100);
+  recipePic.width = IMG_WIDTH;
+  recipePic.height = IMG_HEIGHT;
+
+  var shelf = new PIXI.Sprite(
     PIXI.loader.resources["resources/images/shelf.png"].texture
   );
 
@@ -181,17 +257,13 @@ function addImages() {
 
   stage.addChild(shelf);
 
-  stage.addChild(eggs);
-
-  stage.addChild(flour); 
-
-  stage.addChild(milk);
-
   stage.addChild(spoon);
 
   stage.addChild(bowl);
 
   stage.addChild(cake);
+
+  stage.addChild(recipePic);
 }
 
 function onDragStart(event) {
@@ -216,10 +288,16 @@ function onEggsDragEnd() {
         numCorrect++;
         if (numCorrect >= objectList.length) {
           console.log("You made a cake!");
+          cakeFadeIn = true;
         } else {
           targetObject = objectList[numCorrect];
           //animate spoon
           stir = true;
+          if (numCorrect == 1) {
+            stepOne.style.fill = '#15db19';
+          } else {
+            stepTwo.style.fill = '#15db19';
+          }
         }
       } else {
         //hit the bowl, but was not the right object
@@ -244,10 +322,15 @@ function onFlourDragEnd() {
         if (numCorrect >= objectList.length) {
           console.log("You made a cake!");
           //make cake appear
-
+          cakeFadeIn = true;
         } else {
           targetObject = objectList[numCorrect];
           stir = true;
+          if (numCorrect == 1) {
+            stepOne.style.fill = '#15db19';
+          } else {
+            stepTwo.style.fill = '#15db19';
+          }
         }
       } else {
         misses++;
@@ -274,6 +357,11 @@ function onMilkDragEnd() {
         } else {
           targetObject = objectList[numCorrect];
           stir = true;
+          if (numCorrect == 1) {
+            stepOne.style.fill = '#15db19';
+          } else {
+            stepTwo.style.fill = '#15db19';
+          }
         }
       } else {
         misses++;
@@ -294,7 +382,9 @@ function animate() {
     requestAnimationFrame(animate);
 
     if (stir) {
-      spoon.visible = true;
+      if (!spoon.visible) {
+          spoon.visible = true;
+      }
       if (i > 0) {
         if (forwards) {
           spoon.x += 3;
@@ -389,7 +479,7 @@ function animate() {
         milk.y -= 5;
         done = false;
       } else {
-        milk.y = ingredientsY;
+        milk.y = ingredientsY - 10;
         done &= true;
       }
 
@@ -400,9 +490,22 @@ function animate() {
 
     if (cakeFadeIn) {
       if (!cake.visible) {
+        stepThree.style.fill = '#15db19';
         cake.visible = true;
+        stir = false;
         spoon.visible = false;
         cake.alpha = 0.025;
+
+        //Add num misses to bottom
+        var missesText = new PIXI.Text("Misses: " + misses, {
+          fontFamily: 'Comic Sans MS',
+          fontSize: 20,
+          fontWeight: 'bold'
+        });
+        missesText.x = WIDTH - missesText.width;
+        missesText.y = HEIGHT - missesText.height;
+
+        stage.addChild(missesText);
       } else {
         cake.alpha += 0.025;
       }
@@ -463,3 +566,9 @@ function hitTestObjects(r1, r2) {
   //`hit` will be either `true` or `false`
   return hit;
 };
+
+function swap(i, j) {
+  var temp = objectList[i];
+  objectList[i] = objectList[j];
+  objectList[j] = temp;
+}

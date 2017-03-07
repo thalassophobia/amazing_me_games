@@ -4,11 +4,12 @@ document.body.appendChild(app.view);
 app.stage.interactive = true;
 
 var square = new PIXI.Graphics();
-var circle = new PIXI.Graphics();
-var starContainer = new PIXI.Container();
-var star = new PIXI.Graphics();
 var squareHole = new PIXI.Graphics();
+
+var circle = new PIXI.Graphics();
 var circleHole = new PIXI.Graphics();
+
+var star = new PIXI.Graphics();
 var starHole = new PIXI.Graphics();
 
 var rectWidth = 100;
@@ -17,6 +18,8 @@ var circleRadius = 50;
 
 var squareContainerXPos = 500;
 var squareContainerYPos = 100;
+var circleContainerXPos = 550;
+var circleContainerYPos = 300;
 var snapRange = 30;
 
 function drawSquareContainer(x, y) {
@@ -114,7 +117,7 @@ star.position.x = -400;
 star.position.y = 280;
 drawSquare(100, 100);
 drawSquareContainer(squareContainerXPos, squareContainerYPos);
-drawCircleContainer(550, 300);
+drawCircleContainer(circleContainerXPos, circleContainerYPos);
 starHole.position.x = 0;
 starHole.position.y = 300;
 drawStarContainer();
@@ -153,7 +156,6 @@ function onRectDragMove() {
         && this.position.x <= squareContainerXPos + snapRange - rectWidth
         && this.position.y <= squareContainerYPos + snapRange - rectHeight
         && this.position.y >= squareContainerYPos - snapRange - rectHeight) {
-            console.log("In bounds\n");
             this.x = squareContainerXPos - rectWidth;
             this.y = squareContainerYPos - rectHeight;
             this.interactive = false;
@@ -166,6 +168,16 @@ function onCircleDragMove() {
         var newPosition = this.data.getLocalPosition(this.parent);
         this.x = newPosition.x - circleRadius * 3;
         this.y = newPosition.y - circleRadius * 6;
+
+        if (this.position.x >= circleContainerXPos - snapRange - circleRadius
+        && this.position.x <= circleContainerXPos + snapRange - circleRadius
+        && this.position.y <= circleContainerYPos + snapRange - circleRadius
+        && this.position.y >= circleContainerYPos - snapRange - circleRadius) {
+            console.log("In bounds\n");
+            this.x = circleContainerXPos - circleRadius;
+            this.y = circleContainerYPos - circleRadius;
+            this.interactive = false;
+        }
     }
 }
 

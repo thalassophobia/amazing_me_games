@@ -15,6 +15,10 @@ var rectWidth = 100;
 var rectHeight = 100;
 var circleRadius = 50;
 
+var squareContainerXPos = 500;
+var squareContainerYPos = 100;
+var snapRange = 30;
+
 function drawSquareContainer(x, y) {
     squareHole.lineStyle(2, 0x0000FF, 1);
     squareHole.drawRect(x, y, rectWidth + 3, rectHeight + 3);
@@ -109,7 +113,7 @@ drawCircle(150, 300);
 star.position.x = -400;
 star.position.y = 280;
 drawSquare(100, 100);
-drawSquareContainer(500, 100);
+drawSquareContainer(squareContainerXPos, squareContainerYPos);
 drawCircleContainer(550, 300);
 starHole.position.x = 0;
 starHole.position.y = 300;
@@ -144,6 +148,16 @@ function onRectDragMove() {
         var newPosition = this.data.getLocalPosition(this.parent);
         this.x = newPosition.x - rectWidth * 1.5;
         this.y = newPosition.y - rectHeight * 1.5;
+
+        if (this.position.x >= squareContainerXPos - snapRange - rectWidth
+        && this.position.x <= squareContainerXPos + snapRange - rectWidth
+        && this.position.y <= squareContainerYPos + snapRange - rectHeight
+        && this.position.y >= squareContainerYPos - snapRange - rectHeight) {
+            console.log("In bounds\n");
+            this.x = squareContainerXPos - rectWidth;
+            this.y = squareContainerYPos - rectHeight;
+            this.interactive = false;
+        }
     }
 }
 

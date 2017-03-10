@@ -3,17 +3,21 @@ var screenHeight = 800;
 var app=new PIXI.Application(screenWidth,screenHeight,{antialias: true, backgroundColor:0x1099bb});
 document.body.appendChild(app.view);
 
-PIXI.loader.add("resources/js/images/200px-1.png").add("resources/js/images/200px-2.png").add("resources/js/images/200px-3.png").add("resources/js/images/200px-4.png");
 
 // var puzzleTexture1=PIXI.Texture.fromImage("resources/js/images/Picture1.png");
 // var puzzleTexture2=PIXI.Texture.fromImage("resources/js/images/Picture2.png");
 // var puzzleTexture3=PIXI.Texture.fromImage("resources/js/images/Picture3.png");
 // var puzzleTexture4=PIXI.Texture.fromImage("resources/js/images/Picture4.png");
 
-var puzzleTexture1=PIXI.Texture.fromImage("resources/js/images/200px-1.png");
-var puzzleTexture2=PIXI.Texture.fromImage("resources/js/images/200px-2.png");
-var puzzleTexture3=PIXI.Texture.fromImage("resources/js/images/200px-3.png");
-var puzzleTexture4=PIXI.Texture.fromImage("resources/js/images/200px-4.png");
+var sound = new Howl({
+  src: ["resources/music/Ta Da.mp3"]
+});
+
+
+var puzzleTexture1=PIXI.Texture.fromImage("resources/images/200px-1.png");
+var puzzleTexture2=PIXI.Texture.fromImage("resources/images/200px-2.png");
+var puzzleTexture3=PIXI.Texture.fromImage("resources/images/200px-3.png");
+var puzzleTexture4=PIXI.Texture.fromImage("resources/images/200px-4.png");
 
 
 
@@ -246,6 +250,7 @@ function youWin() {
   "YOU WIN",
   {fontFamily: "Arial", fontSize: 60, fill: "pink"}
   );
+  sound.play();
 
   message.position.set(screenWidth/2-(message.width)/2, 0);
   app.stage.addChild(message);

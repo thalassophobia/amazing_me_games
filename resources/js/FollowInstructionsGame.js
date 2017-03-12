@@ -30,6 +30,8 @@ var ingredientsY = 50;
 
 var misses = 0;
 
+var startTime = new Date();
+
 var stage = new PIXI.Container(),
     renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT);
 document.body.appendChild(renderer.view);
@@ -488,6 +490,7 @@ function animate() {
       }
     }
 
+    //Signals completion of the game
     if (cakeFadeIn) {
       if (!cake.visible) {
         stepThree.style.fill = '#15db19';
@@ -495,6 +498,26 @@ function animate() {
         stir = false;
         spoon.visible = false;
         cake.alpha = 0.025;
+
+        var endTime = new Date();
+
+        var timeDiff = endTime - startTime;
+        //Take off miliseconds
+        timeDiff /= 1000;
+
+        var seconds = Math.round(timeDiff % 60);
+        timeDiff = Math.floor(timeDiff / 60);
+        var minutes = Math.round(timeDiff % 60);
+
+        var timeText = new PIXI.Text("Total Time: " + minutes + " min " + seconds + " sec", {
+          fontFamily: 'Comic Sans MS',
+          fontSize: 20,
+          fontWeight: 'bold'
+        });
+        timeText.x = WIDTH - timeText.width;
+        timeText.y = HEIGHT - timeText.height * 2;
+
+        stage.addChild(timeText);
 
         //Add num misses to bottom
         var missesText = new PIXI.Text("Misses: " + misses, {

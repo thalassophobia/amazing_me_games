@@ -4,13 +4,48 @@ document.body.appendChild(app.view);
 app.stage.interactive = true;
 
 var square = new PIXI.Graphics();
+var squareHole = new PIXI.Graphics();
+
 var circle = new PIXI.Graphics();
-var starContainer = new PIXI.Container();
+var circleHole = new PIXI.Graphics();
+
 var star = new PIXI.Graphics();
+var starHole = new PIXI.Graphics();
 
 var rectWidth = 100;
 var rectHeight = 100;
 var circleRadius = 50;
+
+var squareContainerXPos = 500;
+var squareContainerYPos = 100;
+var circleContainerXPos = 550;
+var circleContainerYPos = 300;
+var snapRange = 30;
+
+function drawSquareContainer(x, y) {
+    squareHole.lineStyle(2, 0x0000FF, 1);
+    squareHole.drawRect(x, y, rectWidth + 3, rectHeight + 3);
+}
+
+function drawCircleContainer(x, y) {
+    circleHole.lineStyle(2, 0xFF0000, 1);
+    circleHole.drawCircle(x, y, circleRadius + 2)
+}
+
+function drawStarContainer() {
+    starHole.lineStyle(2, 0xFFFF00, 1);
+    starHole.moveTo(550, 100);
+    starHole.lineTo(570, 150);
+    starHole.lineTo(630, 155);
+    starHole.lineTo(585, 195);
+    starHole.lineTo(600, 250);
+    starHole.lineTo(550, 220);
+    starHole.lineTo(500, 250);
+    starHole.lineTo(515, 195);
+    starHole.lineTo(470, 155);
+    starHole.lineTo(530, 150);
+    starHole.lineTo(550, 100);
+}
 
 //Draws a dragable square
 function drawSquare(x, y) {
@@ -81,10 +116,22 @@ drawCircle(150, 300);
 star.position.x = -400;
 star.position.y = 280;
 drawSquare(100, 100);
+<<<<<<< HEAD
+=======
+drawSquareContainer(squareContainerXPos, squareContainerYPos);
+drawCircleContainer(circleContainerXPos, circleContainerYPos);
+starHole.position.x = 0;
+starHole.position.y = 300;
+drawStarContainer();
+
+>>>>>>> 3ec7d9aa5696e9c31712fc3b39e8d7c1546557f0
 
 app.stage.addChild(square);
 app.stage.addChild(circle);
 app.stage.addChild(star);
+app.stage.addChild(squareHole);
+app.stage.addChild(circleHole);
+app.stage.addChild(starHole);
 
 function onDragStart(event) {
     // store a reference to the data
@@ -107,6 +154,15 @@ function onRectDragMove() {
         var newPosition = this.data.getLocalPosition(this.parent);
         this.x = newPosition.x - rectWidth * 1.5;
         this.y = newPosition.y - rectHeight * 1.5;
+
+        if (this.position.x >= squareContainerXPos - snapRange - rectWidth
+        && this.position.x <= squareContainerXPos + snapRange - rectWidth
+        && this.position.y <= squareContainerYPos + snapRange - rectHeight
+        && this.position.y >= squareContainerYPos - snapRange - rectHeight) {
+            this.x = squareContainerXPos - rectWidth;
+            this.y = squareContainerYPos - rectHeight;
+            this.interactive = false;
+        }
     }
 }
 
@@ -115,6 +171,16 @@ function onCircleDragMove() {
         var newPosition = this.data.getLocalPosition(this.parent);
         this.x = newPosition.x - circleRadius * 3;
         this.y = newPosition.y - circleRadius * 6;
+
+        if (this.position.x >= circleContainerXPos - snapRange - circleRadius
+        && this.position.x <= circleContainerXPos + snapRange - circleRadius
+        && this.position.y <= circleContainerYPos + snapRange - circleRadius
+        && this.position.y >= circleContainerYPos - snapRange - circleRadius) {
+            console.log("In bounds\n");
+            this.x = circleContainerXPos - circleRadius;
+            this.y = circleContainerYPos - circleRadius;
+            this.interactive = false;
+        }
     }
 }
 

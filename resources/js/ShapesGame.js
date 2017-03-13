@@ -116,12 +116,15 @@ drawCircle(150, 300);
 star.position.x = -400;
 star.position.y = 280;
 drawSquare(100, 100);
+<<<<<<< HEAD
+=======
 drawSquareContainer(squareContainerXPos, squareContainerYPos);
 drawCircleContainer(circleContainerXPos, circleContainerYPos);
 starHole.position.x = 0;
 starHole.position.y = 300;
 drawStarContainer();
 
+>>>>>>> 3ec7d9aa5696e9c31712fc3b39e8d7c1546557f0
 
 app.stage.addChild(square);
 app.stage.addChild(circle);

@@ -7,7 +7,7 @@ var IMG_HEIGHT = 100;
 // Declare objects
 var eggs, flour, milk, bowl, spoon, cake, steps_background;
 
-var targetObject = "eggs"; //change to be randomized
+var targetObject = "eggs";
 var objectList = ["eggs", "flour", "milk"];
 var numCorrect = 0;
 

@@ -52,7 +52,6 @@ PIXI.loader
         "resources/images/lemonade.png",
         "resources/images/lemons.png",
         "resources/images/lemonade_stand.png",
-        "resources/images/ice_cubes.png",
         "resources/images/outdoors_background.png",
         "resources/images/pitcher.png",
         "resources/images/sugar.png",
@@ -247,10 +246,11 @@ function addImages() {
         PIXI.loader.resources["resources/images/pitcher.png"].texture
     );
 
-    pitcher.position.set(WIDTH * 2 / 3 - 10, HEIGHT - IMG_HEIGHT * 4);
+    pitcher.anchor.x = 0.5;
+    pitcher.anchor.y = 0.5;
+    pitcher.position.set(WIDTH * 2 / 3 + 60, HEIGHT - IMG_HEIGHT * 4 + 70);
     pitcher.width = IMG_WIDTH * 2;
     pitcher.height = IMG_HEIGHT * 2;
-    pitcher.anchor.set(0.5);
 
 
     spoon = new PIXI.Sprite(
@@ -489,23 +489,18 @@ function animate() {
     requestAnimationFrame(animate);
 
     if (shake) {
-        if (!spoon.visible) {
-            spoon.visible = true;
-        }
         if (i > 0) {
             if (forwards) {
-                spoon.x += 2;
-                if (spoon.x + IMG_WIDTH + 15 >= pitcher.x + pitcher.width) {
+                pitcher.rotation += .1;
+                if (pitcher.rotation >= 2) {
                     forwards = false;
-                    spoon.scale.x *= -1;
-                    spoon.x = pitcher.x + pitcher.width - 5;
+                    pitcher.rotation = 2;
                 }
             } else {
-                spoon.x -= 2;
-                if (spoon.x - IMG_WIDTH - 5 <= pitcher.x) {
+                pitcher.rotation -= .1;
+                if (pitcher.rotation <= -2) {
                     forwards = true;
-                    spoon.scale.x *= -1;
-                    spoon.x = pitcher.x;
+                    pitcher.rotation = -2;
                 }
             }
             i--;
@@ -604,7 +599,7 @@ function animate() {
         } else if (ice.x - 5 >= iceX) {
             ice.x -= 5;
         } else {
-            ice.x = iceX
+            ice.x = iceX;
             done = true;
         }
 
@@ -684,8 +679,8 @@ function hitTestObjects(r1, r2) {
     //Find the center points of each sprite
     r1.centerX = r1.x + r1.width / 2;
     r1.centerY = r1.y + r1.height / 2;
-    r2.centerX = r2.x + r2.width / 2;
-    r2.centerY = r2.y + r2.height / 2;
+    r2.centerX = r2.x;
+    r2.centerY = r2.y;
 
     //Find the half-widths and half-heights of each sprite
     r1.halfWidth = r1.width / 2;

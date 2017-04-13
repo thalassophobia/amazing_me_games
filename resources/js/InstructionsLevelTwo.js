@@ -37,6 +37,8 @@ var iceY = HEIGHT - IMG_HEIGHT;
 var misses = 0;
 
 var startTime = new Date();
+var start;
+var end = new Date();
 
 var stage = new PIXI.Container(),
     renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT);
@@ -48,7 +50,6 @@ PIXI.loader
         "resources/images/notepad.png",
         "resources/images/shelf.png",
         "resources/images/spoon.png",
-
         "resources/images/lemonade.png",
         "resources/images/lemons.png",
         "resources/images/lemonade_stand.png",
@@ -59,6 +60,39 @@ PIXI.loader
         "resources/images/ice.png"
     ])
     .load(setup);
+
+var sugarInstruction = new Howl({
+  src: ["resources/sounds/SugarInstruction.mp3"]
+});
+
+var squeezeLemons = new Howl({
+  src: ["resources/sounds/Lemons.mp3"]
+});
+
+var pouringWater = new Howl({
+  src: ["resources/sounds/Pouring Water.mp3"]
+});
+
+var iceCubes = new Howl({
+  src: ["resources/sounds/Ice Cubes.mp3"]
+});
+
+var pouringSugar = new Howl({
+  src: ["resources/sounds/Pouring Sugar.mp3"]
+});
+
+var stirringGlass = new Howl({
+  src: ["resources/sounds/Stirring Glass.mp3"]
+});
+
+var yay = new Howl({
+  src: ["resources/sounds/Shorter Yay!.mp3"]
+});
+
+var playSound = false;
+iceCubes.volume(0.4);
+pouringWater.volume(0.4);
+yay.volume(0.2);
 
 //This `setup` function will run when the image has loaded
 function setup() {
@@ -162,6 +196,8 @@ function addText() {
     stage.addChild(stepTwo);
     stage.addChild(stepThree);
     stage.addChild(stepFour);
+
+    start = new Date();
 }
 
 function addImages() {
@@ -350,9 +386,12 @@ function onLemonsDragEnd() {
 
     if (hitTestObjects(lemons, pitcher)) {
         if (targetObject == "lemons") {
+            squeezeLemons.play();
+
             //switch object
             lemons.visible = false;
             numCorrect++;
+
             if (numCorrect >= objectList.length) {
 
                 console.log("You made lemonade!");
@@ -385,10 +424,13 @@ function onWaterDragEnd() {
 
     if (hitTestObjects(water, pitcher)) {
         if (targetObject == "water") {
+            pouringWater.play();
+
             //animate success
             //switch object
             water.visible = false;
             numCorrect++;
+
             if (numCorrect >= objectList.length) {
                 console.log("You made lemonade!");
                 //make lemonade appear
@@ -419,10 +461,13 @@ function onSugarDragEnd() {
 
     if (hitTestObjects(sugar, pitcher)) {
         if (targetObject == "sugar") {
+            pouringSugar.play();
+
             //animate success
             //switch object
             sugar.visible = false;
             numCorrect++;
+
             if (numCorrect >= objectList.length) {
                 console.log("You made lemonade!");
                 lemonadeFadeIn = true;
@@ -452,10 +497,13 @@ function onIceDragEnd() {
 
     if (hitTestObjects(ice, pitcher)) {
         if (targetObject == "ice") {
+            iceCubes.play();
+ 
             //animate success
             //switch object
             ice.visible = false;
             numCorrect++;
+
             if (numCorrect >= objectList.length) {
                 console.log("You made lemonade!");
                 lemonadeFadeIn = true;
@@ -486,10 +534,22 @@ function onDragMove() {
 }
 
 function animate() {
-    requestAnimationFrame(animate);
+    end = new Date();
+    console.log(objectList[numCorrect]);
+    console.log((end-start)/1000);
+    if (objectList[numCorrect] == "sugar" && (end - start)/1000 > 10) {
+        sugarInstruction.play();
+    }
 
-    if (shake) {
+    requestAnimationFrame(animate);
+    if (shake && ((squeezeLemons.playing() == false && iceCubes.playing() == false
+            && pouringWater.playing() == false && pouringSugar.playing() == false)
+            || (i <200))) {
         if (i > 0) {
+            if (playSound == false){
+                playSound = true;
+                stirringGlass.play();
+            }
             if (forwards) {
                 pitcher.rotation += .1;
                 if (pitcher.rotation >= 2) {
@@ -508,6 +568,8 @@ function animate() {
             spoon.visible = false;
             shake = false;
             i = 200;
+            playSound = false;
+            start = new Date();
         }
     }
 
@@ -622,6 +684,13 @@ function animate() {
     //Signals completion of the game
     if (lemonadeFadeIn) {
         if (!lemonade.visible) {
+            stirringGlass.stop();
+            squeezeLemons.stop();
+            iceCubes.stop();
+            pouringSugar.stop();
+            pouringWater.stop();
+            yay.play();
+
             stepFour.style.fill = '#15db19';
             lemonade.visible = true;
             shake = false;

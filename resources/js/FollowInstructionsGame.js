@@ -50,6 +50,11 @@ PIXI.loader
     ])
   .load(setup);
 
+var sound = new Howl({
+  src: ["resources/sounds/Shorter Yay!.mp3"]
+});
+
+
 //This `setup` function will run when the image has loaded
 function setup() {
 
@@ -493,6 +498,9 @@ function animate() {
     //Signals completion of the game
     if (cakeFadeIn) {
       if (!cake.visible) {
+
+        sound.play();
+
         stepThree.style.fill = '#15db19';
         cake.visible = true;
         stir = false;

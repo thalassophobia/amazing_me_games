@@ -44,6 +44,20 @@ var stage = new PIXI.Container(),
     renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT);
 document.body.appendChild(renderer.view);
 
+sounds.load([
+  "resources/sounds/Lemons.mp3", 
+  "resources/sounds/Pouring Water.mp3",
+  "resources/sounds/Ice Cubes.mp3",
+  "resources/sounds/Pouring Sugar.mp3",
+  "resources/sounds/Stirring Glass.mp3"
+]);
+
+squeezeLemons = sounds["resources/sounds/Lemons.mp3"];
+pouringWater = sounds["resources/sounds/Pouring Water.mp3"];
+iceCubes = sounds["resources/sounds/Ice Cubes.mp3"];
+pouringSugar = sounds["resources/sounds/Pouring Sugar.mp3"];
+stirringGlass = sounds["resources/sounds/Stirring Glass.mp3"];
+
 //Use Pixi's built-in `loader` object to load an image
 PIXI.loader
     .add([
@@ -61,10 +75,7 @@ PIXI.loader
     ])
     .load(setup);
 
-var sugarInstruction = new Howl({
-  src: ["resources/sounds/SugarInstruction.mp3"]
-});
-
+/*
 var squeezeLemons = new Howl({
   src: ["resources/sounds/Lemons.mp3"]
 });
@@ -84,14 +95,33 @@ var pouringSugar = new Howl({
 var stirringGlass = new Howl({
   src: ["resources/sounds/Stirring Glass.mp3"]
 });
+*/
 
 var yay = new Howl({
   src: ["resources/sounds/Shorter Yay!.mp3"]
 });
 
+/*
+var sugarInstruction = new Howl({
+  src: ["resources/sounds/Shorter Yay!.mp3"]
+});
+
+var lemonInstruction = new Howl({
+  src: ["resources/sounds/Shorter Yay!.mp3"]
+});
+
+var icecubeInstruction = new Howl({
+  src: ["resources/sounds/Shorter Yay!.mp3"]
+});
+
+var waterInstruction = new Howl({
+  src: ["resources/sounds/Shorter Yay!.mp3"]
+});
+*/
+
 var playSound = false;
-iceCubes.volume(0.4);
-pouringWater.volume(0.4);
+iceCubes.volume = 0.4;
+pouringWater.volume = 0.4;
 yay.volume(0.2);
 
 //This `setup` function will run when the image has loaded
@@ -535,15 +565,13 @@ function onDragMove() {
 
 function animate() {
     end = new Date();
-    console.log(objectList[numCorrect]);
-    console.log((end-start)/1000);
     if (objectList[numCorrect] == "sugar" && (end - start)/1000 > 10) {
-        sugarInstruction.play();
+        //sugarInstruction.play();
     }
 
     requestAnimationFrame(animate);
-    if (shake && ((squeezeLemons.playing() == false && iceCubes.playing() == false
-            && pouringWater.playing() == false && pouringSugar.playing() == false)
+    if (shake && ((squeezeLemons.playing == false && iceCubes.playing == false
+            && pouringWater.playing == false && pouringSugar.playing == false)
             || (i <200))) {
         if (i > 0) {
             if (playSound == false){
@@ -684,11 +712,11 @@ function animate() {
     //Signals completion of the game
     if (lemonadeFadeIn) {
         if (!lemonade.visible) {
-            stirringGlass.stop();
-            squeezeLemons.stop();
-            iceCubes.stop();
-            pouringSugar.stop();
-            pouringWater.stop();
+            stirringGlass.pause();
+            squeezeLemons.pause();
+            iceCubes.pause();
+            pouringSugar.pause();
+            pouringWater.pause();
             yay.play();
 
             stepFour.style.fill = '#15db19';

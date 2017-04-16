@@ -44,19 +44,6 @@ var stage = new PIXI.Container(),
     renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT);
 document.body.appendChild(renderer.view);
 
-sounds.load([
-  "resources/sounds/Lemons.mp3", 
-  "resources/sounds/Pouring Water.mp3",
-  "resources/sounds/Ice Cubes.mp3",
-  "resources/sounds/Pouring Sugar.mp3",
-  "resources/sounds/Stirring Glass.mp3"
-]);
-
-squeezeLemons = sounds["resources/sounds/Lemons.mp3"];
-pouringWater = sounds["resources/sounds/Pouring Water.mp3"];
-iceCubes = sounds["resources/sounds/Ice Cubes.mp3"];
-pouringSugar = sounds["resources/sounds/Pouring Sugar.mp3"];
-stirringGlass = sounds["resources/sounds/Stirring Glass.mp3"];
 
 //Use Pixi's built-in `loader` object to load an image
 PIXI.loader
@@ -75,7 +62,7 @@ PIXI.loader
     ])
     .load(setup);
 
-/*
+
 var squeezeLemons = new Howl({
   src: ["resources/sounds/Lemons.mp3"]
 });
@@ -95,33 +82,40 @@ var pouringSugar = new Howl({
 var stirringGlass = new Howl({
   src: ["resources/sounds/Stirring Glass.mp3"]
 });
-*/
 
 var yay = new Howl({
   src: ["resources/sounds/Shorter Yay!.mp3"]
 });
 
-/*
 var sugarInstruction = new Howl({
-  src: ["resources/sounds/Shorter Yay!.mp3"]
+  src: ["resources/sounds/sugarInstruction.mp3"]
 });
 
-var lemonInstruction = new Howl({
-  src: ["resources/sounds/Shorter Yay!.mp3"]
+var lemonsInstruction = new Howl({
+  src: ["resources/sounds/lemonsInstruction.mp3"]
 });
 
 var icecubeInstruction = new Howl({
-  src: ["resources/sounds/Shorter Yay!.mp3"]
+  src: ["resources/sounds/icecubeInstruction.mp3"]
 });
 
 var waterInstruction = new Howl({
-  src: ["resources/sounds/Shorter Yay!.mp3"]
+  src: ["resources/sounds/waterInstruction.mp3"]
 });
-*/
+
+var initialInstruction = new Howl({
+  src: ["resources/sounds/lemonade_initial_Instructions.mp3"]
+});
+
+var notQuite = new Howl({
+  src: ["resources/sounds/notQuite.mp3"]
+});
+
 
 var playSound = false;
-iceCubes.volume = 0.4;
-pouringWater.volume = 0.4;
+var initialInstructionsPlayed = false;
+iceCubes.volume(0.4);
+pouringWater.volume(0.4);
 yay.volume(0.2);
 
 //This `setup` function will run when the image has loaded
@@ -136,7 +130,6 @@ function setup() {
     stage.addChild(water);
     stage.addChild(lemons);
     stage.addChild(ice);
-
     animate();
 }
 
@@ -416,10 +409,13 @@ function onLemonsDragEnd() {
 
     if (hitTestObjects(lemons, pitcher)) {
         if (targetObject == "lemons") {
+            initialInstruction.stop();
+            lemonsInstruction.stop();
             squeezeLemons.play();
 
             //switch object
             lemons.visible = false;
+            start = new Date();
             numCorrect++;
 
             if (numCorrect >= objectList.length) {
@@ -440,8 +436,20 @@ function onLemonsDragEnd() {
             }
         } else {
             //hit the pitcher, but was not the right object
+            if (notQuite.playing()){
+                notQuite.stop();
+            }
+
+            icecubeInstruction.stop();
+            sugarInstruction.stop();
+            lemonsInstruction.stop();
+            waterInstruction.stop();
+            initialInstruction.stop();
+            notQuite.play();
+
             misses++;
             moveLemonsBack = true;
+            start = new Date();
         }
     }
 }
@@ -454,11 +462,14 @@ function onWaterDragEnd() {
 
     if (hitTestObjects(water, pitcher)) {
         if (targetObject == "water") {
+            initialInstruction.stop();
+            waterInstruction.stop();
             pouringWater.play();
 
             //animate success
             //switch object
             water.visible = false;
+            start = new Date();
             numCorrect++;
 
             if (numCorrect >= objectList.length) {
@@ -477,8 +488,20 @@ function onWaterDragEnd() {
                 }
             }
         } else {
+            if (notQuite.playing()){
+                notQuite.stop();
+            }
+
+            icecubeInstruction.stop();
+            sugarInstruction.stop();
+            lemonsInstruction.stop();
+            waterInstruction.stop();
+            initialInstruction.stop();
+            notQuite.play();
+
             misses++;
             moveWaterBack = true;
+            start = new Date();
         }
     }
 }
@@ -491,11 +514,14 @@ function onSugarDragEnd() {
 
     if (hitTestObjects(sugar, pitcher)) {
         if (targetObject == "sugar") {
+            initialInstruction.stop();
+            sugarInstruction.stop();
             pouringSugar.play();
 
             //animate success
             //switch object
             sugar.visible = false;
+            start = new Date();
             numCorrect++;
 
             if (numCorrect >= objectList.length) {
@@ -513,8 +539,20 @@ function onSugarDragEnd() {
                 }
             }
         } else {
+            if (notQuite.playing()){
+                notQuite.stop();
+            }
+
+            icecubeInstruction.stop();
+            sugarInstruction.stop();
+            lemonsInstruction.stop();
+            waterInstruction.stop();
+            initialInstruction.stop();
+            notQuite.play();
+
             misses++;
             moveSugarBack = true;
+            start = new Date();
         }
     }
 }
@@ -527,11 +565,14 @@ function onIceDragEnd() {
 
     if (hitTestObjects(ice, pitcher)) {
         if (targetObject == "ice") {
+            initialInstruction.stop();
+            icecubeInstruction.stop();
             iceCubes.play();
  
             //animate success
             //switch object
             ice.visible = false;
+            start = new Date();
             numCorrect++;
 
             if (numCorrect >= objectList.length) {
@@ -549,8 +590,19 @@ function onIceDragEnd() {
                 }
             }
         } else {
+            if (notQuite.playing()){
+                notQuite.stop();
+            }
+            icecubeInstruction.stop();
+            sugarInstruction.stop();
+            lemonsInstruction.stop();
+            waterInstruction.stop();
+            initialInstruction.stop();
+            notQuite.play();
+
             misses++;
             moveIceBack = true;
+            start = new Date();
         }
     }
 }
@@ -564,14 +616,38 @@ function onDragMove() {
 }
 
 function animate() {
+
     end = new Date();
-    if (objectList[numCorrect] == "sugar" && (end - start)/1000 > 10) {
-        //sugarInstruction.play();
+
+    if ((end - startTime)/1000 > 2 && initialInstructionsPlayed == false){
+        initialInstruction.play();
+        initialInstructionsPlayed = true;
+    }
+
+    if (objectList[numCorrect] == "sugar" && (end - start)/1000 > 10
+            && notQuite.playing() == false) {
+        sugarInstruction.play();
+        start = new Date();
+    }
+    if (objectList[numCorrect] == "water" && (end - start)/1000 > 10
+            && notQuite.playing() == false) {
+        waterInstruction.play();
+        start = new Date();
+    }
+    if (objectList[numCorrect] == "ice" && (end - start)/1000 > 10
+            && notQuite.playing() == false) {
+        icecubeInstruction.play();
+        start = new Date();
+    }
+    if (objectList[numCorrect] == "lemons" && (end - start)/1000 > 10
+            && notQuite.playing() == false) {
+        lemonsInstruction.play();
+        start = new Date();
     }
 
     requestAnimationFrame(animate);
-    if (shake && ((squeezeLemons.playing == false && iceCubes.playing == false
-            && pouringWater.playing == false && pouringSugar.playing == false)
+    if (shake && ((squeezeLemons.playing() == false && iceCubes.playing() == false
+            && pouringWater.playing() == false && pouringSugar.playing() == false)
             || (i <200))) {
         if (i > 0) {
             if (playSound == false){
@@ -712,6 +788,10 @@ function animate() {
     //Signals completion of the game
     if (lemonadeFadeIn) {
         if (!lemonade.visible) {
+            sugarInstruction.pause();
+            waterInstruction.pause();
+            lemonsInstruction.pause();
+            icecubeInstruction.pause();
             stirringGlass.pause();
             squeezeLemons.pause();
             iceCubes.pause();
